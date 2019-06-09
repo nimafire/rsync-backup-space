@@ -1,0 +1,14 @@
+#!/bin/sh
+ALERT=80
+EMAIL=root
+$USER=user
+used=$(df -H / | grep -vE '^Filesystem|tmpfs|cdrom' | awk '{ print $5 " " $1 }' | awk '{ print $1}' | cut -d'%' -f1)
+
+if [ $used -gt $ALERT ]; then
+        echo "The partition \"$partition\" on $(hostname) has used $used% at $(date)" | mail -s "Disk space alert: $used% used" $EMAIL
+
+elif [ $used -le $ALERT ]; then
+cd /home/$USER/public_html/
+rsync -avz * /backup/rsync/
+
+fi
